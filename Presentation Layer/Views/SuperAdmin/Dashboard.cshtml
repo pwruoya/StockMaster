@@ -1,0 +1,195 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            background: #f4f4f4;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #2c3e50;
+            color: white;
+            position: fixed;
+            height: 100vh;
+            transition: transform 0.3s ease-in-out;
+            padding-top: 20px;
+            left: 0;
+        }
+
+            .sidebar h2 {
+                text-align: center;
+            }
+
+            .sidebar ul {
+                list-style-type: none;
+                padding: 0;
+                margin: 0;
+            }
+
+                .sidebar ul li {
+                    padding: 15px;
+                    text-align: center;
+                    transition: 0.3s;
+                }
+
+                    .sidebar ul li:hover {
+                        background: #34495e;
+                    }
+
+                    .sidebar ul li a {
+                        color: white;
+                        text-decoration: none;
+                        display: block;
+                    }
+
+        .toggle-btn {
+            font-size: 24px;
+            cursor: pointer;
+            color: white;
+            background: #2c3e50;
+            border: none;
+            padding: 10px 15px;
+            position: fixed;
+            top: 15px;
+            left: 260px;
+            transition: left 0.3s;
+            z-index: 1000;
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            width: 100%;
+            transition: margin-left 0.3s ease-in-out;
+        }
+
+        .dashboard-header {
+            background: #3498db;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            flex: 1;
+            min-width: 250px;
+            max-width: 300px;
+        }
+
+        .collapsed {
+            transform: translateX(-250px);
+        }
+
+            .collapsed + .content {
+                margin-left: 0;
+            }
+
+            .collapsed + .toggle-btn {
+                left: 10px;
+            }
+
+        @@media (max-width: 768px) {
+            .sidebar
+
+        {
+            transform: translateX(-250px);
+            position: fixed;
+        }
+
+        .content {
+            margin-left: 0;
+        }
+
+        .toggle-btn {
+            left: 10px;
+        }
+
+        }
+    </style>
+</head>
+<body>
+    <button class="toggle-btn" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="sidebar" id="sidebar">
+        <h2>Super Admin</h2>
+        <ul>
+            <li><a asp-controller="SuperAdmin" asp-action="Dashboard">Dashboard</a></li>
+            <li><a asp-controller="SuperAdmin" asp-action="ManageUsers">Manage Users</a></li>
+            <li><a asp-controller="SuperAdmin" asp-action="ManageInventory">Manage Inventory</a></li>
+            <li>
+                <form method="post" asp-controller="User" asp-action="Logout">
+                    <button type="submit" style="width: 100%; border: none; padding: 15px; background: none; color: white; cursor: pointer; text-align: center;">Logout</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+
+    <div class="content" id="content">
+        <div class="dashboard-header">
+            <h1>Super Admin Dashboard</h1>
+        </div>
+
+        <div class="dashboard-container">
+            <div class="card">
+                <h3>Total Users</h3>
+                <p>@ViewBag.TotalUsers</p>
+            </div>
+            <div class="card">
+                <h3>Total Inventory</h3>
+                <p>@ViewBag.TotalInventory</p>
+            </div>
+            <div class="card">
+                <h3>Total Admins</h3>
+                <p>@ViewBag.AdminCount</p>
+            </div>
+            <div class="card">
+                <h3>Total Regular Users</h3>
+                <p>@ViewBag.UserCount</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            let sidebar = document.getElementById("sidebar");
+            let content = document.getElementById("content");
+            let toggleBtn = document.querySelector(".toggle-btn");
+
+            sidebar.classList.toggle("collapsed");
+            if (sidebar.classList.contains("collapsed")) {
+                toggleBtn.style.left = "10px";
+            } else {
+                toggleBtn.style.left = "260px";
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@{
+    Layout = null;
+    HttpContextAccessor.HttpContext.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+    HttpContextAccessor.HttpContext.Response.Headers["Pragma"] = "no-cache";
+    HttpContextAccessor.HttpContext.Response.Headers["Expires"] = "0";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+    <!-- 🔹 Navbar -->
+    <nav class="bg-blue-600 text-white p-4 flex justify-between items-center shadow-md">
+        <h1 class="text-xl font-semibold">Admin Panel</h1>
+
+        <!-- 🔹 Mobile Menu Button -->
+        <button id="menu-toggle" class="md:hidden focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+            </svg>
+        </button>
+
+        <!-- 🔹 Navigation Links -->
+        <ul id="menu" class="hidden md:flex space-x-6 absolute md:static bg-blue-600 w-full md:w-auto left-0 top-16 md:top-0 p-4 md:p-0 shadow-md md:shadow-none">
+            <li><a href="/Admin/Dashboard" class="block py-2 md:py-0 hover:underline">Dashboard</a></li>
+            <li><a href="/Admin/ManageUsers" class="block py-2 md:py-0 hover:underline">Manage Users</a></li>
+            <li><a href="/Admin/ManageInventory" class="block py-2 md:py-0 hover:underline">Manage Inventory</a></li>
+            <li><a href="/Admin/Logout" class="block py-2 md:py-0 hover:underline">Logout</a></li>
+        </ul>
+    </nav>
+
+
+    <!-- 🔹 Main Content -->
+    <div class="container mx-auto p-6">
+
+        <!-- ✅ Success & Error Messages -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="bg-green-500 text-white p-3 rounded mb-4">
+                @TempData["Success"]
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="bg-red-500 text-white p-3 rounded mb-4">
+                @TempData["Error"]
+            </div>
+        }
+
+        <!-- 🔹 Dashboard Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white p-6 rounded-lg shadow-lg flex items-center">
+                <div class="bg-blue-600 text-white p-4 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 2a6 6 0 100 12 6 6 0 000-12zM2 16a8 8 0 1116 0H2z" />
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <h2 class="text-lg font-semibold">Total Users</h2>
+                    <p class="text-2xl font-bold text-blue-600">@(ViewBag.TotalUsers ?? 0)</p>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-lg flex items-center">
+                <div class="bg-green-600 text-white p-4 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 2a6 6 0 100 12 6 6 0 000-12zM2 16a8 8 0 1116 0H2z" />
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <h2 class="text-lg font-semibold">Total Inventory</h2>
+                    <p class="text-2xl font-bold text-green-600">@(ViewBag.TotalInventory ?? 0)</p>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-lg flex items-center">
+                <div class="bg-purple-600 text-white p-4 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 2a6 6 0 100 12 6 6 0 000-12zM2 16a8 8 0 1116 0H2z" />
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <h2 class="text-lg font-semibold">Total Admins</h2>
+                    <p class="text-2xl font-bold text-purple-600">@(ViewBag.AdminCount ?? 0)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🔹 Recent Users -->
+        <div class="mt-8">
+            <h2 class="text-lg font-semibold mb-4">Recent Users</h2>
+            <table class="w-full bg-white shadow-md rounded">
+                <thead class="bg-blue-600 text-white">
+                    <tr>
+                        <th class="py-3 px-4 text-left">Username</th>
+                        <th class="py-3 px-4 text-left">Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ViewBag.RecentUsers != null && ViewBag.RecentUsers.Count > 0)
+                    {
+                        @foreach (var user in ViewBag.RecentUsers)
+                        {
+                            <tr class="border-b hover:bg-gray-100 transition">
+                                <td class="py-3 px-4">@user.UserName</td>
+                                <td class="py-3 px-4">@user.Email</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="3" class="py-4 px-4 text-center text-gray-500">
+                                No recent users available.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <!-- 🔹 JavaScript for Menu Toggle -->
+    <script>
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            document.getElementById('menu').classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>

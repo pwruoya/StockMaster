@@ -1,0 +1,73 @@
+﻿@model StockMaster.Models.Inventory
+
+@{
+    ViewData["Title"] = "Add Inventory Item";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center">Add Inventory Item</h2>
+
+    <div class="card shadow-sm p-4">
+        <form asp-action="Add" method="post" id="addInventoryForm">
+            <input type="hidden" asp-for="UserId" />
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label fw-bold"></label>
+                <input asp-for="Name" class="form-control" required />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label fw-bold"></label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Quantity" class="form-label fw-bold"></label>
+                <input asp-for="Quantity" type="number" class="form-control" required />
+                <span asp-validation-for="Quantity" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Price" class="form-label fw-bold"></label>
+                <input asp-for="Price" type="number" step="0.01" class="form-control" required />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <button type="submit" id="submitBtn" class="btn btn-primary px-4">Save</button>
+                <a class="btn btn-secondary px-4" href="@Url.Action("Index", "Inventory")">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function showAlert(type, message) {
+            Swal.fire({
+                icon: type,
+                title: message,
+                showConfirmButton: false,
+                timer: 2000
+            });
+        }
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                    showAlert('success', '@TempData["SuccessMessage"]');
+            </text>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+                    showAlert('error', '@TempData["ErrorMessage"]');
+            </text>
+        }
+    </script>
+    <partial name="_ValidationScriptsPartial" />
+}

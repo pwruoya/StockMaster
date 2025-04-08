@@ -1,0 +1,202 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Inventory</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            background: #f4f4f4;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #2c3e50;
+            color: white;
+            position: fixed;
+            height: 100vh;
+            transition: transform 0.3s ease-in-out;
+            padding-top: 20px;
+            transform: translateX(0);
+        }
+
+            .sidebar h2 {
+                text-align: center;
+            }
+
+            .sidebar ul {
+                list-style: none;
+                padding: 0;
+            }
+
+                .sidebar ul li {
+                    padding: 15px;
+                    text-align: center;
+                    cursor: pointer;
+                    transition: 0.3s;
+                }
+
+                    .sidebar ul li:hover {
+                        background: #34495e;
+                    }
+
+                    .sidebar ul li a {
+                        color: white;
+                        text-decoration: none;
+                        display: block;
+                    }
+
+        .toggle-btn {
+            position: absolute;
+            top: 20px;
+            left: 260px;
+            background: #2c3e50;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: left 0.3s ease-in-out;
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            width: 100%;
+            transition: margin-left 0.3s ease-in-out;
+        }
+
+        .inventory-header {
+            background: #3498db;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        .inventory-container {
+            margin-top: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            flex: 1;
+            margin: 10px;
+        }
+
+        .collapsed {
+            transform: translateX(-250px);
+        }
+
+            .collapsed + .toggle-btn {
+                left: 10px;
+            }
+
+        @@media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-250px);
+            }
+
+            .toggle-btn {
+                left: 10px;
+            }
+
+            .content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <h2>Super Admin</h2>
+        <ul>
+            <li><a asp-controller="SuperAdmin" asp-action="Dashboard">Dashboard</a></li>
+            <li><a asp-controller="SuperAdmin" asp-action="ManageUsers">Manage Users</a></li>
+            <li><a asp-controller="SuperAdmin" asp-action="ManageInventory">Manage Inventory</a></li>
+            <li>
+                <form method="post" asp-controller="User" asp-action="Logout">
+                    <button type="submit" class="btn btn-danger" style="width: 100%; border: none; padding: 15px; background: none; color: white; cursor: pointer; text-align: center;">Logout</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+
+    <div class="toggle-btn" id="toggleBtn" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <div class="content" id="content">
+        <div class="inventory-header">
+            <h1>Manage Inventory</h1>
+        </div>
+
+        <div class="inventory-container">
+            <div class="card">
+                <h3>Inventory List</h3>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                    <thead>
+                        <tr style="background-color: #f2f2f2;">
+                            <th style="padding: 10px; border-bottom: 2px solid #ddd;">Item Name</th>
+                            <th style="padding: 10px; border-bottom: 2px solid #ddd;">Quantity</th>
+                            <th style="padding: 10px; border-bottom: 2px solid #ddd;">Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.GroupedInventoryItems != null && ViewBag.GroupedInventoryItems.Count > 0)
+                        {
+                            @foreach (var group in ViewBag.GroupedInventoryItems)
+                            {
+                                <tr style="background-color: #d1ecf1;">
+                                    <td colspan="4" style="text-align: center; font-weight: bold; padding: 10px;">
+                                        Inventory for @group.UserEmail
+                                    </td>
+                                </tr>
+
+                                @foreach (var item in group.Items)
+                                {
+                                    <tr>
+                                        <td style="padding: 10px; text-align: center; border-bottom: 1px solid #ddd;">@item.Name</td>
+                                        <td style="padding: 10px; text-align: center; border-bottom: 1px solid #ddd;">@item.Quantity</td>
+                                        <td style="padding: 10px; text-align: center; border-bottom: 1px solid #ddd;">$@item.Price</td>
+                                        
+                                    </tr>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4" style="text-align: center; padding: 10px;">No inventory items found.</td>
+                            </tr>
+                        }
+                    </tbody>
+
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            let sidebar = document.getElementById("sidebar");
+            let content = document.getElementById("content");
+            sidebar.classList.toggle("collapsed");
+            content.style.marginLeft = sidebar.classList.contains("collapsed") ? "0" : "250px";
+        }
+    </script>
+</body>
+</html>

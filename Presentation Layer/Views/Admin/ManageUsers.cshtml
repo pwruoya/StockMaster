@@ -1,0 +1,147 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body class="bg-gray-100">
+    <!-- 🔹 Navbar (Improved) -->
+    <nav class="bg-blue-600 text-white p-4 flex justify-between items-center shadow-md">
+        <h1 class="text-xl font-semibold">Admin Panel</h1>
+
+        <!-- 🔹 Mobile Menu Button (Fixed) -->
+        <button id="menu-toggle" class="md:hidden focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+            </svg>
+        </button>
+
+        <!-- 🔹 Navigation Links (Updated to match Dashboard) -->
+        <ul id="menu" class="hidden md:flex space-x-6 md:static md:bg-transparent absolute left-0 top-16 w-full bg-blue-600 md:w-auto p-4 md:p-0 shadow-md md:shadow-none">
+            <li><a href="/Admin/Dashboard" class="block py-2 md:py-0 hover:underline">Dashboard</a></li>
+            <li><a href="/Admin/ManageUsers" class="block py-2 md:py-0 hover:underline">Manage Users</a></li>
+            <li><a href="/Admin/ManageInventory" class="block py-2 md:py-0 hover:underline">Manage Inventory</a></li>
+            <li><a href="/Admin/Logout" class="block py-2 md:py-0 hover:underline">Logout</a></li>
+        </ul>
+    </nav>
+
+    
+    <!-- Main Content -->
+    <div class="container mx-auto p-6">
+        <h2 class="text-lg font-semibold mb-4">User List</h2>
+
+        <!-- Table -->
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-700">Manage Users</h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full border border-gray-300 rounded-lg shadow-md">
+                    <thead>
+                        <tr class="bg-blue-600 text-white">
+                            <th class="p-3 text-left">Email</th>
+                            <th class="p-3 text-left hidden sm:table-cell">Role</th>
+                            <th class="p-3 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.Users != null && ViewBag.Users.Count > 0)
+                        {
+                            @foreach (var user in ViewBag.Users)
+                            {
+                                <tr class="border-b border-gray-300 hover:bg-gray-100 transition">
+                                    <td class="p-3">@user.Email</td>
+                                    <td class="p-3 hidden sm:table-cell">
+                                        <span class="px-2 py-1 rounded-md text-white @(user.Role == "Admin" ? "bg-green-500" : "bg-gray-500")">
+                                            @user.Role
+                                        </span>
+                                    </td>
+                                    <td class="p-3 text-center">
+                                        @if (user.Role != "Admin") // ✅ Prevent Admin deletion in UI
+                                        {
+                                            <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded delete-user"
+                                                    data-user-id="@user.Id">
+                                                Delete
+                                            </button>
+                                        }
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="3" class="text-center p-4 text-gray-500">No users found.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <form id="csrf-form" method="post">
+            @Html.AntiForgeryToken()
+        </form>
+
+
+    </div>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            document.getElementById('menu').classList.toggle('hidden');
+        });
+
+                      document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".delete-user").forEach(button => {
+                button.addEventListener("click", function () {
+                    var userId = this.getAttribute("data-user-id");
+
+                    Swal.fire({
+                        title: "Are you sure?",
+                        text: "You are about to delete this user. This action is irreversible!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#d33",
+                        cancelButtonColor: "#3085d6",
+                        confirmButtonText: "Yes, delete!"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            const token = document.querySelector("#csrf-form input[name='__RequestVerificationToken']").value;
+
+                            fetch('/Admin/DeleteUser', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'RequestVerificationToken': token  // ✅ Fix CSRF token usage
+                                },
+                                body: JSON.stringify({ UserId: userId })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    Swal.fire("Deleted!", data.message, "success").then(() => location.reload());
+                                } else {
+                                    Swal.fire("Error!", data.message, "error");
+                                }
+                            })
+                            .catch(error => {
+                                Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                                console.error("Fetch error:", error);
+                            });
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

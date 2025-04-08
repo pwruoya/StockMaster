@@ -1,0 +1,131 @@
+﻿@{
+    ViewData["Title"] = "About Us";
+}
+
+<div class="about-container">
+    <!-- Hero Section -->
+    <section class="about-hero">
+        <h1>About StockMaster</h1>
+        <p>Empowering businesses with smart inventory management solutions.</p>
+    </section>
+
+    <!-- About Content -->
+    <section class="about-content">
+        <div class="about-box">
+            <h2>Our Mission</h2>
+            <p>At StockMaster, we aim to simplify inventory tracking and management, helping businesses optimize their operations efficiently.</p>
+        </div>
+
+        <div class="about-box">
+            <h2>Who We Are</h2>
+            <p>StockMaster is a leading inventory management platform designed for small and medium-sized businesses, ensuring smooth stock control.</p>
+        </div>
+
+        <div class="about-box">
+            <h2>What We Offer</h2>
+            <ul>
+                <li>Real-time inventory tracking</li>
+                <li>Secure user authentication</li>
+                <li>Comprehensive reports and analytics</li>
+                <li>Easy-to-use web interface</li>
+            </ul>
+        </div>
+
+        <div class="about-box">
+            <h2>Contact Us</h2>
+            <p>Need assistance? Reach us at <a href="mailto:support@stockmaster.com">support@stockmaster.com</a>.</p>
+        </div>
+    </section>
+</div>
+
+<style>
+    /* About Page Styling */
+    .about-container {
+        max-width: 900px;
+        margin: auto;
+        padding: 40px 20px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Hero Section */
+    .about-hero {
+        text-align: center;
+        padding: 30px;
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        color: white;
+        border-radius: 10px 10px 0 0;
+    }
+
+        .about-hero h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .about-hero p {
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+    /* About Sections */
+    .about-content {
+        padding: 20px;
+    }
+
+    .about-box {
+        background: rgba(240, 240, 240, 0.9);
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out;
+    }
+
+        .about-box:hover {
+            transform: translateY(-5px);
+        }
+
+        .about-box h2 {
+            color: #e67e22;
+            font-size: 22px;
+        }
+
+        .about-box p, .about-box ul {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .about-box ul {
+            padding-left: 20px;
+        }
+
+        .about-box li {
+            margin-bottom: 5px;
+        }
+
+    /* Responsive Design */
+    @@media screen and (max-width: 768px) {
+        .about-container {
+            width: 95%;
+            padding: 20px;
+        }
+
+        .about-hero h1 {
+            font-size: 26px;
+        }
+
+        .about-hero p {
+            font-size: 16px;
+        }
+
+        .about-box h2 {
+            font-size: 20px;
+        }
+
+        .about-box p, .about-box li {
+            font-size: 14px;
+        }
+    }
+</style>
